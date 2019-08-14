@@ -60,7 +60,7 @@ middleware or something comparable.
 
 ## License
 
-Copyright © 2016 Juho Teperi
+Copyright © 2016-2019 Juho Teperi
 
 Based on [ring-webjars](https://github.com/weavejester/ring-webjars)<br>
 Copyright © 2015 James Reeves
