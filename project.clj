@@ -1,4 +1,4 @@
-(defproject ring-cljsjs "0.2.0-SNAPSHOT"
+(defproject ring-cljsjs "0.2.0"
   :description "Ring middleware to serve assets from Cljsjs packages"
   :url "https://github.com/deraen/ring-cljsjs"
   :license {:name "The MIT License"
