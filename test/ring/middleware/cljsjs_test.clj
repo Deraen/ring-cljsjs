@@ -32,16 +32,30 @@
   (is (= {:status 200
           :headers {"Content-Length" "357514", "Last-Modified" "Wed, 14 Aug 2019 10:30:54 GMT"}}
          (dissoc (cljsjs-request {:request-method :get :uri "/cljsjs/react-mdl/material.css"}) :body)))
-  (is (instance? java.io.InputStream (:body (cljsjs-request {:request-method :get :uri "/cljsjs/react-mdl/material.css"}) :body)))
+  (is (instance? java.io.InputStream (:body (cljsjs-request {:request-method :get :uri "/cljsjs/react-mdl/material.css"}))))
   (is (= {:status 200
           :headers {"Content-Length" "357514", "Last-Modified" "Wed, 14 Aug 2019 10:30:54 GMT"}
           :body nil}
          (cljsjs-request {:request-method :head :uri "/cljsjs/react-mdl/material.css"}))))
 
-(deftest test-wrap-cljsjs
+(deftest wrap-cljsjs-test
   (let [handler (wrap-cljsjs (constantly nil))]
     (is (nil? (handler (mock/request :get "/foo"))))
     (is (nil? (handler (mock/request :get "/cljsjs"))))
     (is (nil? (handler (mock/request :get "/cljsjs/bootstrap"))))
     (is (= (slurp-response handler "/cljsjs/react-mdl/material.min.css")
            (slurp-cljsjs "react-mdl/production/material.min.css")))))
+
+(deftest async-wrap-cljsjs-test
+  (let [handler (wrap-cljsjs (constantly nil))
+        result (promise)]
+    (handler (mock/request :get "/cljsjs/react-mdl/material.min.css")
+             (fn respond [response]
+               (deliver result response))
+             (fn raise [error]
+               (throw error)))
+
+    (is (= {:status 200
+            :headers {"Content-Length" "139732", "Last-Modified" "Wed, 14 Aug 2019 10:30:54 GMT"}}
+           (dissoc @result :body)))
+    (is (instance? java.io.InputStream (:body @result)))))

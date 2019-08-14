@@ -72,6 +72,11 @@
   ([handler {:keys [prefix]
              :or {prefix "/cljsjs"}}]
    (let [assets (asset-map prefix)]
-     (fn [request]
-       (or (cljsjs-request request {:assets assets})
-           (handler request))))))
+     (fn
+       ([request]
+        (or (cljsjs-request request {:assets assets})
+            (handler request)))
+       ([request respond raise]
+        (if-let [response (cljsjs-request request {:assets assets})]
+          (respond response)
+          (handler request respond raise)))))))
