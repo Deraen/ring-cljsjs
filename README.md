@@ -40,7 +40,22 @@ By default assets are placed on the `/cljsjs` path. You can change
 the path by specifying prefix in a options map.
 
 ```clj
-(def app (web-cljsjs handler {:prefix "/cljsjs"}))
+(def app (wrap-cljsjs handler {:prefix "/cljsjs"}))
+```
+
+### Content-type headers
+
+Similar to Ring [wrap-resource](https://ring-clojure.github.io/ring/ring.middleware.resource.html)
+and other middleware, Ring-cljsjs doesn't automatically add content-type headers.
+User is expected to use [wrap-content-type](https://ring-clojure.github.io/ring/ring.middleware.content-type.html)
+middleware or something comparable.
+
+```
+(def app
+  (-> handler
+      (wrap-resource "public/")
+      (wrap-cljsjs {:prefix "/cljsjs"})
+      (wrap-content-type)))
 ```
 
 ## License
